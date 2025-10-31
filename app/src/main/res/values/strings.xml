@@ -5,6 +5,7 @@
     <string name="title_activity_search">SearchActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
+    <string name="dark">Темная тема</string>
     <string name="share_app">Поделиться приложением</string>
     <string name="write_to_devs">Написать в поддержку</string>
     <string name="user_agreement">Пользовательское соглашение</string>

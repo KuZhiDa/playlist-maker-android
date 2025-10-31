@@ -1,11 +1,14 @@
-package com.example.playlist.ui
+package com.example.playlist.ui.search
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -19,21 +22,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.playlist.R
-
-class SearchActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MaterialTheme {
-                SearchScreen { finish() }
-            }
-        }
-    }
-}
+import com.example.playlist.data.network.Track
 
 @Composable
-fun SearchScreen(onNavigateBack: () -> Unit) {
+fun SearchScreen(modifier: Modifier, viewModel: SearchViewModel, onNavigateBack: () -> Unit) {
+    val screenState by viewModel.searchScreenState.collectAsState()
     var query by remember { mutableStateOf("") }
 
     Column(
@@ -71,6 +66,9 @@ fun SearchScreen(onNavigateBack: () -> Unit) {
             singleLine = true,
             leadingIcon = {
                 Icon(
+                    modifier = Modifier.clickable {
+                        viewModel.search(query)
+                    },
                     imageVector = Icons.Default.Search,
                     contentDescription = "Поиск",
                     tint = Color(0xFFAEAFB4)
@@ -104,5 +102,67 @@ fun SearchScreen(onNavigateBack: () -> Unit) {
                 fontSize = 16.sp
             )
         )
+        when (screenState) {
+            is SearchState.Initial -> {
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Введите строку для поиска")
+                }
+            }
+
+            is SearchState.Searching -> {
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            is SearchState.Success -> {
+                val tracks = (screenState as SearchState.Success).list
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(tracks.size) { index ->
+                        TrackListItem(track = tracks[index])
+                        HorizontalDivider(thickness = 0.5.dp)
+                    }
+                }
+            }
+
+            is SearchState.Fail -> {
+                val error = (screenState as SearchState.Fail).error
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Ошибка: $error", color = Color.Red)
+                }
+            }
+        }
     }
 }
+
+@Composable
+fun TrackListItem(track: Track) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_music),
+            contentDescription = "Трек ${track.trackName}"
+        )
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(track.trackName, fontWeight = FontWeight.Bold)
+            Text(track.artistName)
+        }
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(track.trackTime)
+        }
+    }
+}
+

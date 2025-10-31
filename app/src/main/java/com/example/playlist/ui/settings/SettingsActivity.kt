@@ -1,14 +1,10 @@
-package com.example.playlist.ui
+package com.example.playlist.ui.settings
 
 import android.content.Intent
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,17 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import com.example.playlist.R
-
-class SettingsActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MaterialTheme {
-                SettingsScreen { finish() }
-            }
-        }
-    }
-}
 
 @Composable
 fun SettingsScreen(onNavigateBack: () -> Unit) {
@@ -74,12 +59,13 @@ fun SettingsScreen(onNavigateBack: () -> Unit) {
         Spacer(modifier = Modifier.height(32.dp))
 
         Column(modifier = Modifier.fillMaxWidth()) {
+
             SettingsItem(
                 iconRes = R.drawable.share,
                 text = stringResource(R.string.share_app)
             ) {
                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                    type = "text/plain"
+                    Intent.setType = "text/plain"
                     putExtra(Intent.EXTRA_TEXT, shareMessage)
                 }
                 context.startActivity(Intent.createChooser(shareIntent, shareChooserTitle))
@@ -90,7 +76,7 @@ fun SettingsScreen(onNavigateBack: () -> Unit) {
                 text = stringResource(R.string.write_to_devs)
             ) {
                 val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-                    data = "mailto:".toUri()
+                    Intent.setData = "mailto:".toUri()
                     putExtra(Intent.EXTRA_EMAIL, arrayOf(devEmail))
                     putExtra(Intent.EXTRA_SUBJECT, emailSubject)
                     putExtra(Intent.EXTRA_TEXT, emailBody)
@@ -103,7 +89,7 @@ fun SettingsScreen(onNavigateBack: () -> Unit) {
                 text = stringResource(R.string.user_agreement)
             ) {
                 val agreementIntent = Intent(Intent.ACTION_VIEW).apply {
-                    data = userAgreementLink.toUri()
+                    Intent.setData = userAgreementLink.toUri()
                 }
                 context.startActivity(agreementIntent)
             }
