@@ -1,4 +1,4 @@
-package com.example.playlist
+package com.example.playlist.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.painterResource
+import com.example.playlist.R
 
 class SearchActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

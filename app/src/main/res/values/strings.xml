@@ -17,6 +17,6 @@
     <string name="email_body">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="email_chooser_title">Отправить письмо</string>
 
-    <string name="user_agreement_link">https://practicum.yandex.ru/</string>
+    <string name="user_agreement_link">https://yandex.ru/legal/praktikum_offer/</string>
     <string name="title_activity_navigation">NavigationActivity</string>
 </resources>

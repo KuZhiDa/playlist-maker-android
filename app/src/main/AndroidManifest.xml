@@ -12,22 +12,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Playlist" >
         <activity
-            android:name=".NavigationActivity"
-            android:exported="false"
-            android:label="@string/title_activity_navigation"
-            android:theme="@style/Theme.Playlist" />
-        <activity
-            android:name=".SettingsActivity"
+            android:name=".ui.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings"
             android:theme="@style/Theme.Playlist" />
         <activity
-            android:name=".SearchActivity"
+            android:name=".ui.SearchActivity"
             android:exported="false"
             android:label="@string/title_activity_search"
             android:theme="@style/Theme.Playlist" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Playlist" >
             <intent-filter>
