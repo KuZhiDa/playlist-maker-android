@@ -2,4 +2,21 @@
     <string name="app_name">Playlist Maker</string>
     <string name="search_title">Поиск</string>
     <string name="settings_title">Настройки</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <string name="share_app">Поделиться приложением</string>
+    <string name="write_to_devs">Написать в поддержку</string>
+    <string name="user_agreement">Пользовательское соглашение</string>
+
+    <string name="share_message">Попробуйте приложение Playlist Maker: %1$s</string>
+    <string name="share_chooser_title">Поделиться приложением</string>
+
+    <string name="dev_email">ddaminov@sfedu.ru</string>
+    <string name="email_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="email_body">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="email_chooser_title">Отправить письмо</string>
+
+    <string name="user_agreement_link">https://practicum.yandex.ru/</string>
+    <string name="title_activity_navigation">NavigationActivity</string>
 </resources>

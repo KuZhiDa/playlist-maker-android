@@ -33,51 +33,25 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                MainScreen()
+                PlaylistHost()
             }
         }
     }
 }
-
-class SearchActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MaterialTheme {
-                Text("Поиск")
-            }
-        }
-    }
-}
-
-class SettingsActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MaterialTheme {
-                Text("Настройки")
-            }
-        }
-    }
-}
-
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    onNavigateToSearch: () -> Unit,
+    onNavigateToSettings: () -> Unit
+) {
     val context = LocalContext.current
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color(0xFF3772E7))
-    ) {
+    Column(modifier = Modifier.fillMaxSize().background(Color(0xFF3772E7))) {
         Text(
             text = "Playlist maker",
             color = Color.White,
             fontSize = 26.sp,
             fontWeight = FontWeight.SemiBold,
-            modifier = Modifier
-                .padding(start = 16.dp, top = 14.dp, bottom = 16.dp)
+            modifier = Modifier.padding(start = 16.dp, top = 14.dp, bottom = 16.dp)
         )
 
         Column(
@@ -89,39 +63,34 @@ fun MainScreen() {
         ) {
             Spacer(modifier = Modifier.height(8.dp))
             Card(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp),
+                modifier = Modifier.padding(horizontal = 16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
                 MenuItem(
                     iconRes = R.drawable.search,
                     title = "Поиск"
-                ) {
-                    context.startActivity(Intent(context, SearchActivity::class.java))
-                }
+                ) { onNavigateToSearch() }
+
                 MenuItem(
                     iconRes = R.drawable.library,
                     title = "Плейлисты"
-                ) {
-                    Toast .makeText(context, "Нажата кнопка \"Плейлисты\"", Toast.LENGTH_SHORT) .show()
-                }
+                ) { Toast.makeText(context, "Нажата кнопка \"Плейлисты\"", Toast.LENGTH_SHORT).show() }
+
                 MenuItem(
                     iconRes = R.drawable.favorite_border,
                     title = "Избранное"
-                ) {
-                    Toast .makeText(context, "Нажата кнопка \"Избранное\"", Toast.LENGTH_SHORT) .show()
-                }
+                ) { Toast.makeText(context, "Нажата кнопка \"Избранное\"", Toast.LENGTH_SHORT).show() }
+
                 MenuItem(
                     iconRes = R.drawable.settings,
                     title = "Настройки"
-                ) {
-                    context.startActivity(Intent(context, SettingsActivity::class.java))
-                }
+                ) { onNavigateToSettings() }
             }
         }
     }
 }
+
 
 @Composable
 fun MenuItem(iconRes: Int, title: String, onClick: () -> Unit) {
