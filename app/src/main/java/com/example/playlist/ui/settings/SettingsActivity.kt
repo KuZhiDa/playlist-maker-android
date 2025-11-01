@@ -3,27 +3,22 @@ package com.example.playlist.ui.settings
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import com.example.playlist.R
+import com.example.playlist.ui.item.SettingsItem
+import com.example.playlist.ui.item.ThemeSwitchItem
 
 @Composable
 fun SettingsScreen(onNavigateBack: () -> Unit) {
@@ -62,10 +57,8 @@ fun SettingsScreen(onNavigateBack: () -> Unit) {
                 color = Color(0xFF1A1B22)
             )
         }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
         Column(modifier = Modifier.fillMaxWidth()) {
+            ThemeSwitchItem(trackWidth = 32.dp, trackHeight = 12.dp, thumbSize = 18.dp)
 
             SettingsItem(
                 iconRes = R.drawable.share,
@@ -106,46 +99,6 @@ fun SettingsScreen(onNavigateBack: () -> Unit) {
                 }
                 context.startActivity(agreementIntent)
             }
-        }
-    }
-}
-
-@Composable
-fun SettingsItem(
-    iconRes: Int,
-    text: String,
-    iconWidth: Dp,
-    iconHeight: Dp,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(end = 12.dp)
-            .padding(start = 16.dp)
-            .height(61.dp)
-            .clickable(onClick = onClick),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = text,
-            fontSize = 16.sp,
-            color = Color.Black,
-            modifier = Modifier.weight(1f)
-        )
-        Box(Modifier
-            .size(24.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = iconRes),
-                contentDescription = null,
-                tint = Color(0xFFAEAFB4),
-                modifier = Modifier
-                    .width(iconWidth)
-                    .height(iconHeight)
-            )
         }
     }
 }

@@ -20,4 +20,6 @@
 
     <string name="user_agreement_link">https://yandex.ru/legal/praktikum_offer/</string>
     <string name="title_activity_navigation">NavigationActivity</string>
+    <string name="title_empty">Ничего не нашлось</string>
+    <string name="no_internet">Проблема со связью</string>
 </resources>
