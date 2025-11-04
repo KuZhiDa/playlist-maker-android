@@ -41,22 +41,25 @@ fun SettingsScreen(onNavigateBack: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 16.dp)
+                .padding(horizontal = 16.dp, vertical = 14.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.back),
                 contentDescription = "Назад",
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(16.dp)
                     .clickable { onNavigateBack() }
             )
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(24.dp))
             Text(
                 text = stringResource(R.string.settings_title),
                 fontSize = 22.sp,
                 color = Color(0xFF1A1B22)
             )
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
         Column(modifier = Modifier.fillMaxWidth()) {
             ThemeSwitchItem(trackWidth = 32.dp, trackHeight = 12.dp, thumbSize = 18.dp)
 

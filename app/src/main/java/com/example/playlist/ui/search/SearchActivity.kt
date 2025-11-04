@@ -41,7 +41,7 @@ fun SearchScreen(modifier: Modifier, viewModel: SearchViewModel, onNavigateBack:
                 painter = painterResource(id = R.drawable.back),
                 contentDescription = "Назад",
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(16.dp)
                     .clickable { onNavigateBack() }
             )
             Spacer(modifier = Modifier.width(16.dp))
@@ -53,7 +53,7 @@ fun SearchScreen(modifier: Modifier, viewModel: SearchViewModel, onNavigateBack:
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         TextField(
             value = query,

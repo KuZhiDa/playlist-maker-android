@@ -5,25 +5,22 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playlist.R
+import com.example.playlist.ui.item.MenuItem
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,41 +82,5 @@ fun MainScreen(
                 ) { onNavigateToSettings() }
             }
         }
-    }
-}
-
-
-@Composable
-fun MenuItem(iconRes: Int, title: String, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(66.dp)
-            .padding(horizontal = 16.dp)
-            .clickable(onClick = onClick),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Icon(
-            painter = painterResource(id = iconRes),
-            contentDescription = null,
-            tint = Color(0xFF212327),
-            modifier = Modifier.size(24.dp)
-        )
-        Text(
-            text = title,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color(0xFF212327),
-            modifier = Modifier.weight(1f).padding(start = 16.dp)
-        )
-        Icon(
-            painter = painterResource(id = R.drawable.chevron_right),
-            contentDescription = null,
-            tint = Color(0xFFB0B6BE),
-            modifier = Modifier
-                .width(8.dp)
-                .height(14.dp)
-        )
     }
 }
