@@ -1,6 +1,7 @@
 package com.example.playlist.ui.settings
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -88,7 +89,12 @@ fun SettingsScreen(onNavigateBack: () -> Unit) {
                     putExtra(Intent.EXTRA_SUBJECT, emailSubject)
                     putExtra(Intent.EXTRA_TEXT, emailBody)
                 }
-                context.startActivity(Intent.createChooser(emailIntent, emailChooserTitle))
+                val packageManager = context.packageManager
+                if (emailIntent.resolveActivity(packageManager) != null) {
+                    context.startActivity(Intent.createChooser(emailIntent, emailChooserTitle))
+                } else {
+                    Toast.makeText(context, "Нет приложения для отправки email", Toast.LENGTH_SHORT).show()
+                }
             }
 
             SettingsItem(

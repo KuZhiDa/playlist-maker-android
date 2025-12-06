@@ -1,4 +1,4 @@
-package com.example.playlist.data.dto
+package com.example.playlist.domain
 
 data class TrackDto(
     val trackName: String,

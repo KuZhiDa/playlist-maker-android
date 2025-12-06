@@ -76,7 +76,10 @@ fun SearchScreen(modifier: Modifier, viewModel: SearchViewModel, onNavigateBack:
                         imageVector = Icons.Default.Clear,
                         contentDescription = "Очистить",
                         tint = Color(0xFFAEAFB4),
-                        modifier = Modifier.clickable { query = "" }
+                        modifier = Modifier.clickable {
+                            query = ""
+                            viewModel.resetSearch()
+                        }
                     )
                 }
             },
@@ -139,7 +142,9 @@ fun SearchScreen(modifier: Modifier, viewModel: SearchViewModel, onNavigateBack:
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(tracks.size) { index ->
-                            TrackListItem(track = tracks[index])
+                            TrackListItem(track = tracks[index], onClick = {
+                                println("Клик на трек: ${tracks[index].trackName}")
+                            })
                             HorizontalDivider(thickness = 0.5.dp)
                         }
                     }

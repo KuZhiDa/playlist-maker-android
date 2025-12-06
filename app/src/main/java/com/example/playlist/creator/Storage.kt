@@ -1,6 +1,6 @@
 package com.example.playlist.creator
 
-import com.example.playlist.data.dto.TrackDto
+import com.example.playlist.domain.TrackDto
 
 class Storage {
     private val listTracks = listOf(

@@ -41,5 +41,8 @@ class SearchViewModel(
             }
     }
 
+    fun resetSearch() {
+        _searchScreenState.value = SearchState.Initial
+    }
 
 }
