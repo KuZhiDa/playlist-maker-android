@@ -17,13 +17,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playlist.R
 import com.example.playlist.data.network.Track
-
+import coil.compose.AsyncImage
 @Composable
 fun TrackListItem(track: Track, onClick: (() -> Unit)? = null) {
     Row(
@@ -33,12 +34,16 @@ fun TrackListItem(track: Track, onClick: (() -> Unit)? = null) {
             .clickable(enabled = onClick != null) { onClick?.invoke() },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_music),
-            contentDescription = "Обложка трека ${track.trackName}",
+        AsyncImage(
+            model = track.artworkUrl,
+            contentDescription = "Обложка ${track.trackName}",
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(56.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(8.dp)),
+            placeholder = painterResource(R.drawable.ic_music),
+            error = painterResource(R.drawable.ic_music),
+            fallback = painterResource(R.drawable.ic_music)
         )
 
         Spacer(modifier = Modifier.width(12.dp))

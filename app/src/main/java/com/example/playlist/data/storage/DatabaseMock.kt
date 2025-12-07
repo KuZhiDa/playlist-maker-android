@@ -22,29 +22,6 @@ class DatabaseMock(
     private val _favoriteTracks = MutableStateFlow<List<Track>>(emptyList())
     val favoriteTracksFlow: StateFlow<List<Track>> get() = _favoriteTracks
 
-    init {
-        var idCounter = System.currentTimeMillis()
-        tracks.addAll(listOf(
-            Track(id = idCounter++, trackName = "Владивосток 2000", artistName = "Мумий Троль", trackTime = "02:38", playlistId = 0),
-            Track(id = idCounter++, trackName = "Группа крови", artistName = "Кино", trackTime = "04:43", playlistId = 0),
-            Track(id = idCounter++, trackName = "Не смотри назад", artistName = "Ария", trackTime = "05:12", playlistId = 0),
-            Track(id = idCounter++, trackName = "Звезда по имени Солнце", artistName = "Кино", trackTime = "03:45", playlistId = 0),
-            Track(id = idCounter++, trackName = "Лондон", artistName = "Аквариум", trackTime = "04:32", playlistId = 0),
-            Track(id = idCounter++, trackName = "На заре", artistName = "Альянс", trackTime = "03:50", playlistId = 0),
-            Track(id = idCounter++, trackName = "Перемен", artistName = "Кино", trackTime = "04:56", playlistId = 0),
-            Track(id = idCounter++, trackName = "Розовый фламинго", artistName = "Сплин", trackTime = "03:15", playlistId = 0),
-            Track(id = idCounter++, trackName = "Танцевать", artistName = "Мельница", trackTime = "03:42", playlistId = 0),
-            Track(id = idCounter++, trackName = "Чёрный бумер", artistName = "Серега", trackTime = "04:01", playlistId = 0)
-        ))
-    }
-
-    fun searchTracks(expression: String): List<Track> {
-        return tracks.filter {
-            it.trackName.contains(expression, true) ||
-                    it.artistName.contains(expression, true)
-        }
-    }
-
     private fun notifyHistoryChanged() {
         scope.launch(Dispatchers.IO) {
             _historyUpdates.emit(Unit)

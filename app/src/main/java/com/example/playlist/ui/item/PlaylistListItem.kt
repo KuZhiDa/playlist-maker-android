@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +28,8 @@ fun PlaylistListItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = { onClick.invoke() }),
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -38,12 +40,21 @@ fun PlaylistListItem(
             colorFilter = ColorFilter.tint(Color.Gray)
         )
         Column(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 16.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Text(playlist.name, fontSize = 16.sp)
-            val text = "${playlist.tracks.size} tracks"
-            Text(text, fontSize = 11.sp, color = Color.Gray)
+            Text(
+                text = playlist.name,
+                fontSize = 16.sp,
+                color = Color.Black
+            )
+            Text(
+                text = "${playlist.tracks.size} треков",
+                fontSize = 12.sp,
+                color = Color.Gray
+            )
         }
     }
 }

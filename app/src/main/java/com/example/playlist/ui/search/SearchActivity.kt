@@ -28,6 +28,7 @@ import com.example.playlist.ui.viewModel.SearchViewModel
 fun SearchScreen(modifier: Modifier, viewModel: SearchViewModel, onNavigateBack: () -> Unit, onNavigateToTrackDetails: (Track) -> Unit = {}) {
     val screenState by viewModel.searchScreenState.collectAsState()
     var query by remember { mutableStateOf("") }
+    var lastQuery by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         viewModel.resetSearch()
@@ -68,6 +69,7 @@ fun SearchScreen(modifier: Modifier, viewModel: SearchViewModel, onNavigateBack:
             leadingIcon = {
                 Icon(
                     modifier = Modifier.clickable {
+                        lastQuery = query
                         viewModel.search(query)
                     },
                     imageVector = Icons.Default.Search,
@@ -159,10 +161,40 @@ fun SearchScreen(modifier: Modifier, viewModel: SearchViewModel, onNavigateBack:
 
             is SearchState.Fail -> {
                 val error = (screenState as SearchState.Fail).error
-                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Ошибка: $error", color = Color.Red)
+                Box(
+                    modifier = modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.no_internet),
+                            contentDescription = "Ошибка",
+                            modifier = Modifier.size(120.dp)
+                        )
+                        Spacer(modifier = Modifier.height(19.dp))
+                        Text(
+                            text = "Проблемы со связью",
+                            color = Color(0xFF7A7C81)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Загрузка не удалась. Проверьте подключение к интернету",
+                            color = Color(0xFF7A7C81),
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(19.dp))
+                        Button(onClick = { viewModel.search(lastQuery) }) {
+                            Text("Обновить")
+                        }
+                    }
+
                 }
             }
+
         }
     }
 }

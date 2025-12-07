@@ -7,6 +7,7 @@ import com.example.playlist.data.network.Track
 import com.example.playlist.domain.Creator
 import com.example.playlist.domain.TracksRepository
 import com.example.playlist.ui.search.SearchState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,13 +46,10 @@ class SearchViewModel(
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return SearchViewModel(
-                        Creator.getTracksRepository(scope = kotlinx.coroutines.CoroutineScope(Dispatchers.IO))
-                    ) as T
+                    return SearchViewModel(Creator.getTracksRepository()) as T
                 }
             }
     }
-
 
     fun setSelectedTrack(track: Track) {
         _selectedTrack.value = track

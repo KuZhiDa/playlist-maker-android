@@ -10,6 +10,7 @@ import com.example.playlist.domain.Creator
 import com.example.playlist.domain.Playlist
 import com.example.playlist.domain.PlaylistsRepository
 import com.example.playlist.domain.TracksRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,10 +19,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class PlaylistViewModel() : ViewModel() {
-    private val database = DatabaseMock(scope = viewModelScope)
+    private val tracksRepository: TracksRepository = Creator.getTracksRepository()
+
+    private val database = DatabaseMock(scope = CoroutineScope(Dispatchers.IO))
 
     private val playlistsRepository: PlaylistsRepository = PlaylistsRepositoryImpl(database)
-    private val tracksRepository: TracksRepository = TracksRepositoryImpl(database)
 
     val playlists: Flow<List<Playlist>> = playlistsRepository.getAllPlaylists()
     val favoriteTracks: StateFlow<List<Track>> = tracksRepository
@@ -54,4 +56,7 @@ class PlaylistViewModel() : ViewModel() {
 
     fun getTrackFlow(trackId: Long) = tracksRepository.getTrackById(trackId)
 
+    fun getPlaylist(playlistId: Long): Flow<Playlist?> {
+        return playlistsRepository.getPlaylist(playlistId)
+    }
 }
