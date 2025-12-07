@@ -1,24 +1,20 @@
 package com.example.playlist.ui
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -44,7 +40,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(
     onNavigateToSearch: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToPlaylists: () -> Unit,
+    onNavigateToFavorites: () -> Unit
 ) {
     val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize().background(Color(0xFF3772E7))) {
@@ -77,12 +75,12 @@ fun MainScreen(
                 MenuItem(
                     iconRes = R.drawable.library,
                     title = "Плейлисты"
-                ) { Toast.makeText(context, "Нажата кнопка \"Плейлисты\"", Toast.LENGTH_SHORT).show() }
+                ) { onNavigateToPlaylists() }
 
                 MenuItem(
                     iconRes = R.drawable.favorite_border,
                     title = "Избранное"
-                ) { Toast.makeText(context, "Нажата кнопка \"Избранное\"", Toast.LENGTH_SHORT).show() }
+                ) { onNavigateToFavorites() }
 
                 MenuItem(
                     iconRes = R.drawable.settings,

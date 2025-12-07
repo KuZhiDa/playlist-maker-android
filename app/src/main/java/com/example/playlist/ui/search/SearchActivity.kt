@@ -20,13 +20,18 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.playlist.R
+import com.example.playlist.data.network.Track
 import com.example.playlist.ui.item.TrackListItem
+import com.example.playlist.ui.viewModel.SearchViewModel
 
 @Composable
-fun SearchScreen(modifier: Modifier, viewModel: SearchViewModel, onNavigateBack: () -> Unit) {
+fun SearchScreen(modifier: Modifier, viewModel: SearchViewModel, onNavigateBack: () -> Unit, onNavigateToTrackDetails: (Track) -> Unit = {}) {
     val screenState by viewModel.searchScreenState.collectAsState()
     var query by remember { mutableStateOf("") }
 
+    LaunchedEffect(Unit) {
+        viewModel.resetSearch()
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -142,9 +147,10 @@ fun SearchScreen(modifier: Modifier, viewModel: SearchViewModel, onNavigateBack:
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(tracks.size) { index ->
-                            TrackListItem(track = tracks[index], onClick = {
-                                println("Клик на трек: ${tracks[index].trackName}")
-                            })
+                            TrackListItem(track = tracks[index],
+                                onClick = {
+                                    onNavigateToTrackDetails(tracks[index])
+                                })
                             HorizontalDivider(thickness = 0.5.dp)
                         }
                     }

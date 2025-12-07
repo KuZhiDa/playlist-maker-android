@@ -1,10 +1,12 @@
-package com.example.playlist.ui.search
+package com.example.playlist.ui.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.playlist.data.network.Track
 import com.example.playlist.domain.Creator
 import com.example.playlist.domain.TracksRepository
+import com.example.playlist.ui.search.SearchState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,10 +19,17 @@ class SearchViewModel(
 ) : ViewModel() {
     private val _searchScreenState = MutableStateFlow<SearchState>(SearchState.Initial)
     val searchScreenState  = _searchScreenState.asStateFlow()
+    private val _selectedTrack = MutableStateFlow<Track?>(null)
+    val selectedTrack  = _selectedTrack.asStateFlow()
+
 
     fun search(whatSearch: String){
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                if (whatSearch.isBlank()) {
+                    _searchScreenState.update { SearchState.Initial }
+                    return@launch
+                }
                 _searchScreenState.update { SearchState.Searching }
                 val list = tracksRepository.searchTracks(expression = whatSearch)
                 _searchScreenState.update { SearchState.Success(list = list) }
@@ -36,9 +45,16 @@ class SearchViewModel(
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return SearchViewModel(Creator.getTracksRepository()) as T
+                    return SearchViewModel(
+                        Creator.getTracksRepository(scope = kotlinx.coroutines.CoroutineScope(Dispatchers.IO))
+                    ) as T
                 }
             }
+    }
+
+
+    fun setSelectedTrack(track: Track) {
+        _selectedTrack.value = track
     }
 
     fun resetSearch() {
