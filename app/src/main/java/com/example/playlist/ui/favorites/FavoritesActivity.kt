@@ -78,7 +78,10 @@ fun FavoritesScreen(
                 items(favoriteTracks) { track ->
                     TrackListItem(
                         track = track,
-                        onClick = { onNavigateToTrackDetails(track) }
+                        onClick = { onNavigateToTrackDetails(track) },
+                        onLongClick = {
+                            viewModel.toggleFavorite(track, false)
+                        }
                     )
                 }
             }

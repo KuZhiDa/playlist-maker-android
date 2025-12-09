@@ -33,19 +33,21 @@ fun TrackDetailsScreen(
     onNavigateBack: () -> Unit,
     playlistViewModel: PlaylistViewModel
 ) {
+    val dbTrackFlow = remember(track) { playlistViewModel.getTrackByNameAndArtist(track) }
+    val dbTrack by dbTrackFlow.collectAsState(initial = null)
+    val currentTrack = dbTrack ?: track
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     val playlists by playlistViewModel.playlists.collectAsState(emptyList())
-    val currentTrack by playlistViewModel.getTrackFlow(track.id)
-        .collectAsState(initial = track)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
-        horizontalAlignment = Alignment.Start
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Кнопка назад
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -69,68 +71,56 @@ fun TrackDetailsScreen(
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 16.dp),
+                .size(312.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.LightGray),
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
                 model = track.artworkUrl,
                 contentDescription = "Обложка ${track.trackName}",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(250.dp)
-                    .clip(RoundedCornerShape(16.dp)),
+                modifier = Modifier.size(312.dp),
                 placeholder = painterResource(R.drawable.ic_music),
                 error = painterResource(R.drawable.ic_music),
                 fallback = painterResource(R.drawable.ic_music)
             )
         }
 
+        Spacer(modifier = Modifier.height(24.dp))
+
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.width(312.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
-
             Text(
                 text = track.trackName,
-                fontSize = 24.sp,
-                color = Color(0xFF1A1B22),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                textAlign = TextAlign.Start,
-                fontWeight = FontWeight.Bold
+                fontSize = 22.sp,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
+                color = Color(0xFF1A1B22)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = track.artistName,
-                fontSize = 18.sp,
-                color = Color(0xFF7A7C81),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                textAlign = TextAlign.Start
+                fontSize = 14.sp,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
+                color = Color(0xFF1A1B22)
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(50.dp))
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 FloatingActionButton(
                     onClick = { showBottomSheet = true },
                     containerColor = Color(0xFFF5F5F5),
                     contentColor = Color(0xFF1A1B22),
                     shape = CircleShape,
-                    modifier = Modifier.size(56.dp)
+                    modifier = Modifier.size(51.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.add),
@@ -141,14 +131,12 @@ fun TrackDetailsScreen(
 
                 FloatingActionButton(
                     onClick = {
-                        currentTrack?.let {
-                            playlistViewModel.toggleFavorite(it, !it.favorite)
-                        }
+                        currentTrack?.let { playlistViewModel.toggleFavorite(it, !it.favorite) }
                     },
-                    containerColor = if (currentTrack?.favorite == true) Color(0xFFFF3B30) else Color(0xFFF5F5F5),
-                    contentColor = if (currentTrack?.favorite == true) Color.White else Color(0xFF1A1B22),
+                    containerColor = if (currentTrack?.favorite == true) Color(0xFFFF3B30) else Color(0xFFF5F5F5), // красный или светло-серый
+                    contentColor = if (currentTrack?.favorite == true) Color.White else Color(0xFF1A1B22), // белая или черная иконка
                     shape = CircleShape,
-                    modifier = Modifier.size(56.dp)
+                    modifier = Modifier.size(51.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.like),
@@ -159,19 +147,20 @@ fun TrackDetailsScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(22.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(32.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Длительность:",
                     fontSize = 16.sp,
-                    color = Color(0xFF1A1B22)
+                    color = Color(0xFFAEAFB4)
                 )
-
                 Text(
                     text = track.trackTime,
                     fontSize = 16.sp,
@@ -180,8 +169,6 @@ fun TrackDetailsScreen(
                 )
             }
         }
-
-        Spacer(modifier = Modifier.weight(1f))
     }
 
     if (showBottomSheet) {
@@ -227,7 +214,7 @@ fun TrackDetailsScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
-                                        playlistViewModel.insertSongToPlaylist(track, playlist.id)
+                                        playlistViewModel.insertSongToPlaylist(currentTrack, playlist.id)
                                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                                             if (!sheetState.isVisible) {
                                                 showBottomSheet = false

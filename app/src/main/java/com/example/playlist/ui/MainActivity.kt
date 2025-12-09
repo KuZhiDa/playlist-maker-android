@@ -23,11 +23,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playlist.R
+import com.example.playlist.domain.Creator
 import com.example.playlist.ui.item.MenuItem
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Creator.initDatabase(applicationContext)
         setContent {
             var showBottomSheet  by remember { mutableStateOf(false) }
             MaterialTheme {

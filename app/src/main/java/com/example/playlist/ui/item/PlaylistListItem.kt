@@ -34,7 +34,7 @@ fun PlaylistListItem(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Image(
-            modifier = Modifier.size(48.dp),
+            modifier = Modifier.size(45.dp),
             painter = painterResource(id = R.drawable.ic_music),
             contentDescription = playlist.name,
             colorFilter = ColorFilter.tint(Color.Gray)
@@ -48,11 +48,13 @@ fun PlaylistListItem(
             Text(
                 text = playlist.name,
                 fontSize = 16.sp,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Normal,
                 color = Color.Black
             )
             Text(
                 text = "${playlist.tracks.size} треков",
-                fontSize = 12.sp,
+                fontSize = 11.sp,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Normal,
                 color = Color.Gray
             )
         }

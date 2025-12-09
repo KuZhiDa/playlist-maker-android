@@ -1,33 +1,35 @@
 package com.example.playlist.data.network
 
-import com.example.playlist.data.database.DatabaseMock
 import com.example.playlist.data.dto.TracksSearchRequest
 import com.example.playlist.data.dto.TracksSearchResponse
+import com.example.playlist.database.AppDatabase
+import com.example.playlist.database.mapers.toEntity
+import com.example.playlist.database.mapers.toTrack
 import com.example.playlist.domain.NetworkClient
 import com.example.playlist.domain.TracksRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlin.String
 
 class TracksRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val database: DatabaseMock
+    database: AppDatabase
 ) : TracksRepository {
+
+    private val dao = database.tracksDao()
 
     override suspend fun searchTracks(expression: String): List<Track> {
         val response = networkClient.doRequest(TracksSearchRequest(expression))
-
         return if (response is TracksSearchResponse) {
             response.results.mapNotNull { dto ->
-
                 val name = dto.trackName?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
                 val artist = dto.artistName?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-
+                val artwork = dto.artworkUrl100?.replace("100x100bb", "500x500bb") ?: ""
                 val durationMillis = dto.trackTimeMillis ?: 0L
                 val minutes = durationMillis / 60000
                 val seconds = (durationMillis % 60000) / 1000
-
                 val time = "$minutes:${seconds.toString().padStart(2, '0')}"
-
                 Track(
                     id = dto.trackId ?: (name + artist).hashCode().toLong(),
                     playlistId = 0,
@@ -35,7 +37,7 @@ class TracksRepositoryImpl(
                     trackName = name,
                     artistName = artist,
                     trackTime = time,
-                    artworkUrl = dto.artworkUrl100
+                    artworkUrl = artwork
                 )
             }
         } else {
@@ -43,36 +45,41 @@ class TracksRepositoryImpl(
         }
     }
 
-
-    override fun getTrackById(trackId: Long): Flow<Track?> {
-        return database.getTrackById(trackId)
-    }
-
     override fun getTrackByNameAndArtist(track: Track): Flow<Track?> {
-        return database.getTrackByNameAndArtist(track)
+        return dao.getTrackByNameAndArtist(track.trackName, track.artistName).map { it?.toTrack() }
     }
 
     override fun getFavoriteTracks(): Flow<List<Track>> {
-        return database.getFavoriteTracks()
+        return dao.getFavoriteTracks().map { list -> list.map { it.toTrack() } }
     }
 
-    override suspend fun insertSongToPlaylist(track: Track, playlistId: Long) {
-        val trackWithPlaylist = track.copy(
-            playlistId = playlistId,
-            id = System.currentTimeMillis()
-        )
-        database.insertTrack(trackWithPlaylist)
+    override fun getTrackById(trackId: Long): Flow<Track?> {
+        return dao.getTrackById(trackId).map { it?.toTrack() }
     }
+
+
+    override suspend fun insertTrackToPlaylist(track: Track, playlistId: Long) {
+        val existing = dao.getTrackByNameAndArtist(track.trackName, track.artistName).firstOrNull()
+        val updated = (existing?.toTrack() ?: track).copy(
+            id = existing?.id ?: track.id,
+            playlistId = playlistId
+        )
+        dao.insertTrack(updated.toEntity())
+    }
+
 
     override suspend fun deleteTrackFromPlaylist(track: Track) {
-        database.insertTrack(track.copy(playlistId = 0))
+        dao.insertTrack(track.copy(playlistId = 0).toEntity())
     }
 
     override suspend fun updateTrackFavoriteStatus(track: Track, isFavorite: Boolean) {
-        database.insertTrack(track.copy(favorite = isFavorite))
+        val existing = dao.getTrackByNameAndArtist(track.trackName, track.artistName).firstOrNull()
+        val updated = (existing?.toTrack() ?: track).copy(
+            id = existing?.id ?: track.id,
+            favorite = isFavorite
+        )
+        dao.insertTrack(updated.toEntity())
     }
 
-    override suspend fun deleteTracksByPlaylistId(playlistId: Long) {
-        database.deleteTracksByPlaylistId(playlistId)
-    }
 }
+

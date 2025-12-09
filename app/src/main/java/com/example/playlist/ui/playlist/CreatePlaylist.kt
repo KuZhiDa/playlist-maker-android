@@ -1,5 +1,10 @@
 package com.example.playlist.ui.playlist
 
+import android.net.Uri
+import android.os.Build
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,21 +14,53 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import coil.compose.AsyncImage
 import com.example.playlist.R
+import com.example.playlist.ui.viewModel.NewPlaylistViewModel
 
 @Composable
 fun CreatePlaylistScreen(
+    viewModel: NewPlaylistViewModel,
     onNavigateBack: () -> Unit,
-    onCreatePlaylist: (String, String) -> Unit,
 ) {
     var playlistName by remember { mutableStateOf("") }
     var playlistDescription by remember { mutableStateOf("") }
-
     val isFormValid = playlistName.isNotBlank()
+
+    val coverImageUri by viewModel.coverImageUri.collectAsState()
+    val context = LocalContext.current
+
+    // Лаунчеры для выбора изображения и запроса разрешения
+    val pickImageLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let { viewModel.setCoverImageUri(it.toString()) }
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) pickImageLauncher.launch("image/*")
+    }
+
+    fun pickImage() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            pickImageLauncher.launch("image/*")
+        } else {
+            val permission = Manifest.permission.READ_EXTERNAL_STORAGE
+            when {
+                ContextCompat.checkSelfPermission(context, permission) == android.content.pm.PackageManager.PERMISSION_GRANTED ->
+                    pickImageLauncher.launch("image/*")
+                else -> permissionLauncher.launch(permission)
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -57,16 +94,27 @@ fun CreatePlaylistScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 136.dp, bottom = 150.dp),
+                .padding(top = 80.dp, bottom = 50.dp)
+                .clickable { pickImage() },
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.picha),
-                contentDescription = "Обложка",
-                tint = Color(0xFFAEAFB4),
-                modifier = Modifier.size(180.dp)
-            )
+            if (coverImageUri != null) {
+                AsyncImage(
+                    model = Uri.parse(coverImageUri),
+                    contentDescription = "Обложка",
+                    modifier = Modifier.size(100.dp)
+                )
+            } else {
+                Icon(
+                    painter = painterResource(id = R.drawable.picha),
+                    contentDescription = "Обложка",
+                    tint = Color(0xFFAEAFB4),
+                    modifier = Modifier.size(100.dp)
+                )
+            }
         }
+
+        Spacer(modifier = Modifier.height(80.dp))
 
         Column(
             modifier = Modifier
@@ -130,7 +178,7 @@ fun CreatePlaylistScreen(
                     .clickable(
                         enabled = isFormValid,
                         onClick = {
-                            onCreatePlaylist(playlistName, playlistDescription)
+                            viewModel.createNewPlaylist(playlistName, playlistDescription)
                             onNavigateBack()
                         }
                     ),

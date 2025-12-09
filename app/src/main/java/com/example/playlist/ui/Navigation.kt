@@ -19,6 +19,7 @@ import com.example.playlist.ui.search.SearchScreen
 import com.example.playlist.ui.viewModel.SearchViewModel
 import com.example.playlist.ui.settings.SettingsScreen
 import com.example.playlist.ui.track.TrackDetailsScreen
+import com.example.playlist.ui.viewModel.NewPlaylistViewModel
 import com.example.playlist.ui.viewModel.PlaylistViewModel
 
 enum class PlaylistScreen(val route: String) {
@@ -35,9 +36,14 @@ enum class PlaylistScreen(val route: String) {
 @Composable
 fun PlaylistHost() {
     val navController = rememberNavController()
-    val playlistViewModel: PlaylistViewModel = viewModel()
+    val playlistViewModel: PlaylistViewModel = viewModel(
+        factory = PlaylistViewModel.factory
+    )
     val searchViewModel: SearchViewModel = viewModel(
         factory = SearchViewModel.getViewModelFactory()
+    )
+    val newPlaylistViewModel: NewPlaylistViewModel = viewModel(
+        factory = NewPlaylistViewModel.factory
     )
 
     NavHost(
@@ -58,7 +64,10 @@ fun PlaylistHost() {
             SearchScreen(
                 modifier = Modifier.fillMaxSize(),
                 viewModel = searchViewModel,
-                onNavigateBack = { navController.popBackStack() },
+                onNavigateBack = {
+                    searchViewModel.resetAll()
+                    navController.popBackStack()
+                                 },
                 onNavigateToTrackDetails = { track ->
                     searchViewModel.setSelectedTrack(track)
                     navController.navigate(PlaylistScreen.TrackDetail.route)
@@ -112,9 +121,8 @@ fun PlaylistHost() {
         }
         composable(PlaylistScreen.CreatePlaylist.route) {
             CreatePlaylistScreen(
-                onNavigateBack = { navController.popBackStack() },
-                onCreatePlaylist = {name, desc ->
-                    playlistViewModel.createPlaylist(name, desc) },
+                viewModel = newPlaylistViewModel,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
         composable(PlaylistScreen.Favorites.route) {
