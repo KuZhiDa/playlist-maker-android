@@ -1,7 +1,5 @@
 package com.example.playlist.ui.item
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,14 +22,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playlist.R
-import com.example.playlist.data.network.Track
+import com.example.playlist.data.model.Track
 import coil.compose.AsyncImage
 @Composable
 fun TrackListItem(track: Track, onClick: (() -> Unit)? = null, onLongClick: (() -> Unit)? = null) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(vertical = 8.dp)
             .combinedClickable(
                 onClick = { onClick?.invoke() },
                 onLongClick = { onLongClick?.invoke() }
