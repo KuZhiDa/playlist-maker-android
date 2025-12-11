@@ -62,9 +62,5 @@
 
     <string name="empty_library">Ваша медиатека пуста</string>
 
-<<<<<<< Updated upstream
     <string name="fail_datastore">DataStore not initialized, call Creator.initDatabase(ctx)</string>
-
-=======
->>>>>>> Stashed changes
 </resources>
