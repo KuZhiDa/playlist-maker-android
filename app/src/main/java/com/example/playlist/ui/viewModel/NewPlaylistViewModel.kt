@@ -3,6 +3,7 @@ package com.example.playlist.ui.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.playlist.di.Creator
 import com.example.playlist.domain.PlaylistsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,12 +32,17 @@ class NewPlaylistViewModel(
         }
     }
 
+
+    fun clearCoverImage() {
+        _coverImageUri.value = null
+    }
+
     companion object {
         val factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return NewPlaylistViewModel(
-                    playlistsRepository = com.example.playlist.domain.Creator.getPlaylistsRepository()
+                    playlistsRepository = Creator.getPlaylistsRepository()
                 ) as T
             }
         }
